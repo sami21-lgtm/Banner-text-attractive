@@ -54,17 +54,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000); 
     }
 
-    // 🎵 ৫. ব্রাউজার সিকিউরিটি বাইপাস করে গান বাজানোর গ্যারান্টিড ফাংশন
+    // 🎵 ৫. ব্রাউজার সিকিউরিটি বাইপাস করে গান বাজানোর আপডেট করা ফাংশন
     function initMusicController() {
         const music = document.getElementById('bg-music');
         if (!music) return;
+
+        // সাউন্ড লেভেল কিছুটা কমিয়ে রাখা হলো (ঐচ্ছিক)
+        music.volume = 0.5;
 
         const playAudio = () => {
             if (music.paused) {
                 music.play()
                     .then(() => {
                         console.log("SUCCESS: Music started playing!");
-                        // গান সফলভাবে চালু হয়ে গেলে ইভেন্ট রিমুভ হবে
+                        // গান সফলভাবে চালু হয়ে গেলে ইভেন্ট রিমুভ হবে
                         document.removeEventListener('click', playAudio);
                         document.removeEventListener('touchstart', playAudio);
                     })
@@ -74,7 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // মোবাইল টাচ (touchstart) অথবা ল্যাপটপ ক্লিক (click) পেলেই গান চালু হবে
+        // নিজে থেকে বাজানোর চেষ্টা করবে
+        playAudio();
+
+        // ব্রাউজার ব্লক করলে মোবাইল টাচ অথবা ল্যাপটপ ক্লিকের জন্য ওয়েট করবে
         document.addEventListener('click', playAudio);
         document.addEventListener('touchstart', playAudio);
     }

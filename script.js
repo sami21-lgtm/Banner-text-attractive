@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const music = document.getElementById('bg-music');
         if (!music) return;
 
-        // সাউন্ড লেভেল কিছুটা কমিয়ে রাখা হলো (ঐচ্ছিক)
+        // সাউন্ড লেভেল কিছুটা কমিয়ে রাখা হলো (ঐচ্ছিক)
         music.volume = 0.5;
 
         const playAudio = () => {
@@ -67,9 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 music.play()
                     .then(() => {
                         console.log("SUCCESS: Music started playing!");
-                        // গান সফলভাবে চালু হয়ে গেলে ইভেন্ট রিমুভ হবে
-                        document.removeEventListener('click', playAudio);
-                        document.removeEventListener('touchstart', playAudio);
+                        // গান সফলভাবে চালু হয়ে গেলে সব ইভেন্ট রিমুভ হবে
+                        removeMusicEvents();
                     })
                     .catch(error => {
                         console.log("Waiting for user interaction to play audio...", error);
@@ -77,12 +76,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // নিজে থেকে বাজানোর চেষ্টা করবে
+        // নিজে থেকে বাজানোর চেষ্টা করবে (যদি ব্রাউজার অ্যালাউ করে)
         playAudio();
 
-        // ব্রাউজার ব্লক করলে মোবাইল টাচ অথবা ল্যাপটপ ক্লিকের জন্য ওয়েট করবে
-        document.addEventListener('click', playAudio);
-        document.addEventListener('touchstart', playAudio);
+        // ইভেন্ট লিসেনারগুলো একসাথে হ্যান্ডেল করার ফাংশন
+        const musicEvents = ['click', 'touchstart', 'pointerdown'];
+        
+        function removeMusicEvents() {
+            musicEvents.forEach(event => {
+                document.removeEventListener(event, playAudio);
+            });
+        }
+
+        // ব্রাউজার ব্লক করলে মোবাইল টাচ, ক্লিক বা পয়েন্টার ডাউনের জন্য ওয়েট করবে
+        musicEvents.forEach(event => {
+            document.addEventListener(event, playAudio, { passive: true });
+        });
     }
 
     // সব ফাংশন একসাথে রান করা হলো
@@ -90,9 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setBackgroundImages();
     initMusicController();
     
-    if (slides.length > 0) {
-        slides[0].classList.add('active');
-    }
+    // ❌ slides[0].classList.add('active'); -> এই লাইনটি রিমুভ করা হয়েছে কারণ HTML-এ অলরেডি active দেওয়া আছে।
 
     startAutoSlide();
 });

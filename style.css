@@ -1,0 +1,155 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0c1122; 
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden; 
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 1100px; 
+    height: 90vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-text {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.banner-text h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.banner-text .hover-effect {
+    color: #4be3ff; 
+    transition: color 0.3s ease;
+}
+
+.banner-text h2:hover .hover-effect {
+    color: #fff;
+    text-shadow: 0 0 10px #4be3ff, 0 0 20px #4be3ff;
+}
+
+.slides {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9; /* ল্যাপটপের জন্য স্ট্যান্ডার্ড সিনেমাটিক রেশিও */
+    border: 4px solid #ffffff;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    overflow: hidden;
+    background-color: #050814;
+}
+
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease-in-out, visibility 0.8s;
+}
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 🖼️ ইমেজ রেন্ডারিং ও পজিশন ফিক্স যাতে ছবি না ফাটে */
+.image-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover; 
+    background-position: center center; 
+    background-repeat: no-repeat;
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: crisp-edges;
+    transform: scale(1);
+    transition: transform 5s ease-out;
+}
+
+.slide.active .image-container {
+    transform: scale(1.06);
+}
+
+.image-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 4rem; 
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.image-name span {
+    display: inline-block;
+    opacity: 0;
+    margin: 0 12px; 
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.image-name span:nth-child(even) {
+    transform: translateY(45px) rotate(6deg) scale(0.8);
+}
+
+.image-name span:nth-child(odd) {
+    transform: translateY(-25px) rotate(-6deg) scale(0.8);
+}
+
+.slide.active .image-name span {
+    opacity: 1;
+}
+
+.slide.active .image-name span:nth-child(even) {
+    transform: translateY(15px) rotate(4deg) scale(1);
+}
+
+.slide.active .image-name span:nth-child(odd) {
+    transform: translateY(-10px) rotate(-4deg) scale(1);
+}
+
+/* 📱 মোবাইল এবং ট্যাবলেট স্ক্রিনের রেসপন্সিভ সাইজ */
+@media (max-width: 768px) {
+    .slider-container {
+        padding: 10px;
+        height: auto;
+    }
+    .banner-text h2 {
+        font-size: 1.8rem; 
+    }
+    .slides {
+        aspect-ratio: 4 / 3; /* মোবাইলের স্ক্রিনের জন্য পারফেক্ট সাইজ */
+        border-width: 3px;
+    }
+    .image-name {
+        font-size: 2.2rem; 
+    }
+    .image-name span {
+        margin: 0 5px !important; 
+    }
+}

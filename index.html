@@ -40,38 +40,8 @@
     </div>
   </div>
 
-  <!-- 🎵 গান দ্রুত রেডি করার জন্য autoplay এবং muted ব্যবহার করা হয়েছে -->
-  <audio id="bg-music" src="jboy-remix_aya-nakamura-copines-jboyremix-iwg-_ (2).mp3" loop autoplay muted preload="auto"></audio>
+  <audio id="bg-music" src="jboy-remix_aya-nakamura-copines-jboyremix-iwg-_ (2).mp3" loop preload="auto"></audio>
 
   <script src="script.js"></script>
-
-  <!-- ⚡ সুপার ফাস্ট অডিও অ্যাক্টিভেশন স্ক্রিপ্ট -->
-  <script>
-    const music = document.getElementById('bg-music');
-
-    // পেজ লোড হতেই ব্যাকগ্রাউন্ডে গান প্লে করে রাখা (মিউটেড অবস্থায়)
-    window.addEventListener('DOMContentLoaded', () => {
-      music.play().catch(() => {
-        console.log("Autoplay blocked, waiting for user touch...");
-      });
-    });
-
-    // ইউজার স্ক্রিনে টাচ বা ক্লিক করা মাত্রই গান আনমিউট এবং প্লে হবে
-    function instantPlay() {
-      if (music) {
-        music.muted = false; // মিউট তুলে দেওয়া হলো
-        if (music.paused) {
-          music.play().catch(err => console.log(err));
-        }
-        
-        // একবার গান চালু হয়ে গেলে ইভেন্টগুলো রিমুভ করে দেওয়া হবে পারফরম্যান্সের জন্য
-        allEvents.forEach(event => document.removeEventListener(event, instantPlay));
-      }
-    }
-
-    // মোবাইলের জন্য touchstart এবং pointerdown সবচেয়ে ফাস্ট কাজ করে
-    const allEvents = ['touchstart', 'pointerdown', 'click'];
-    allEvents.forEach(event => document.addEventListener(event, instantPlay, { passive: true }));
-  </script>
 </body>
 </html>

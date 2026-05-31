@@ -15,6 +15,57 @@ body {
     overflow-x: hidden; 
 }
 
+/* ==========================================
+   🎵 ২. স্টার্ট বাটনের ওভারলে স্টাইল
+   ========================================== */
+#play-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #050814;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* সবকিছুর ওপরে থাকবে */
+    transition: opacity 0.5s ease-in-out;
+}
+
+#start-btn {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4be3ff;
+    background: transparent;
+    border: 2px solid #4be3ff;
+    border-radius: 50px;
+    cursor: pointer; 
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px rgba(75, 227, 255, 0.2);
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent; /* মোবাইলে অদ্ভুত ব্যাকগ্রাউন্ড ফ্ল্যাশ বন্ধ করবে */
+}
+
+/* 💻 হোভার ইফেক্ট (শুধুমাত্র মাউস বা ডেস্কটপ স্ক্রিনের জন্য ফিক্সড) */
+@media (hover: hover) {
+    #start-btn:hover {
+        color: #050814;
+        background-color: #4be3ff;
+        box-shadow: 0 0 25px #4be3ff, 0 0 50px #4be3ff;
+        transform: scale(1.05);
+    }
+}
+
+/* 📱 মোবাইলে টাচ করলে যেমন ইফেক্ট হবে */
+#start-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 10px #4be3ff;
+}
+
+/* ==========================================
+   ৩. মেইন কন্টেইনার এবং ব্যানার টেক্সট
+   ========================================== */
 .slider-container {
     position: relative;
     width: 100%;
@@ -48,10 +99,13 @@ body {
     text-shadow: 0 0 10px #4be3ff, 0 0 20px #4be3ff;
 }
 
+/* ==========================================
+   ৪. স্লাইডার এবং স্লাইড সেটআপ
+   ========================================== */
 .slides {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9; 
+    aspect-ratio: 16 / 9; /* ল্যাপটপ/ডেস্কটপের সিনেমাটিক রেশিও */
     border: 4px solid #ffffff;
     box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     overflow: hidden;
@@ -72,6 +126,7 @@ body {
     visibility: visible;
 }
 
+/* 🖼️ ইমেজ কন্টেইনার (যাতে মোবাইলে বা বড় স্ক্রিনে ছবি না ফাটে) */
 .image-container {
     position: absolute;
     width: 100%;
@@ -79,16 +134,22 @@ body {
     background-size: cover; 
     background-position: center center; 
     background-repeat: no-repeat;
+    
+    /* হাই-কোয়ালিটি রেন্ডারিং বুস্টার */
     image-rendering: -webkit-optimize-contrast; 
     image-rendering: crisp-edges;
+    
     transform: scale(1);
     transition: transform 5s ease-out;
 }
 
 .slide.active .image-container {
-    transform: scale(1.06);
+    transform: scale(1.06); /* একটিভ হলে হালকা স্মুথ জুম */
 }
 
+/* ==========================================
+   ৫. টেক্সট অ্যানিমেশন (DESERT, FOREST ইত্যাদি)
+   ========================================== */
 .image-name {
     position: absolute;
     top: 50%;
@@ -132,22 +193,42 @@ body {
     transform: translateY(-10px) rotate(-4deg) scale(1);
 }
 
+/* ==========================================
+   📱 ৬. মোবাইল এবং ট্যাবলেট রেসপন্সিভনেস (নো-ব্রেক ফিক্স)
+   ========================================== */
 @media (max-width: 768px) {
     .slider-container {
         padding: 10px;
         height: auto;
     }
+    
     .banner-text h2 {
         font-size: 1.8rem; 
     }
+    
+    /* মোবাইলের খাড়া স্ক্রিনের জন্য ৪:৩ রেশিও ফিক্স, যাতে ইমেজ না টানে বা ফাটে */
     .slides {
         aspect-ratio: 4 / 3; 
         border-width: 3px;
+        width: 100%;
+        max-height: 65vh; 
     }
+    
+    .image-container {
+        background-size: cover;
+        background-position: center center;
+    }
+    
     .image-name {
         font-size: 2.2rem; 
     }
+    
     .image-name span {
-        margin: 0 5px !important; 
+        margin: 0 5px !important; /* মোবাইলে অক্ষরের মাঝের স্পেস পারফেক্ট করবে */
+    }
+    
+    #start-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
     }
 }

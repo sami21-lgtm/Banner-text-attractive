@@ -2,7 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSlideIndex = 0;
     const slides = document.querySelectorAll('.slide');
     const music = document.getElementById('bg-music');
+    const playOverlay = document.getElementById('play-overlay');
+    const startBtn = document.getElementById('start-btn');
     let autoSlideTimer;
+
+    // শুরুতে স্লাইডার পজ (Pause) করে রাখা হয়েছে
+    slides.forEach(slide => slide.classList.remove('active'));
 
     // ১. টেক্সট ভেঙে আলাদা অক্ষরে রূপান্তর এবং অ্যানিমেশন সেটআপ
     function prepareAnimatedTexts() {
@@ -22,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ২. ইমেজ ব্যাকগ্রাউন্ড লোড করা (ইমেজ লোডিং প্রমিজসহ)
+    // ২. ইমেজ ব্যাকগ্রাউন্ড লোড করা ও প্রি-লোড করা
     function preloadImages() {
         const promises = Array.from(slides).map(slide => {
             return new Promise((resolve) => {
@@ -36,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             container.style.backgroundImage = `url("${imageUrl}")`;
                             resolve();
                         };
-                        img.onerror = () => resolve(); // কোনো কারণে ইমেজ মিস হলে আটকে থাকবে না
+                        img.onerror = () => resolve(); 
                     } else {
                         resolve();
                     }
@@ -61,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slides[currentSlideIndex].classList.add('active');
     }
 
-    // ৪. অটো-প্লে টাইমার চালু করা (প্রতি ৪ সেকেন্ড পর পর)
+    // ৪. অটো-প্লে টাইমার চালু করা
     function startAutoSlide() {
         if (!autoSlideTimer) {
             autoSlideTimer = setInterval(() => {
@@ -70,46 +75,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 🎵 ৫. গান এবং স্লাইডার একসাথে শুরু করার জন্য মাস্টার কন্ট্রোলার
-    function startExperience() {
-        if (music) {
-            music.volume = 0.5; // সাউন্ড লেভেল ৫০%
-            music.play()
-                .then(() => {
-                    console.log("SUCCESS: Music & Experience started!");
-                })
-                .catch(error => {
-                    console.log("Autoplay blocked. Click required.");
-                });
+    // 🎵 ৫. বাটন ক্লিকের পর গান এবং ছবি একসাথে চালু করার মাস্টার ফাংশন
+    function startEverything() {
+        // ওভারলে স্ক্রিন থেকে সরিয়ে ফেলা
+        if (playOverlay) {
+            playOverlay.style.opacity = '0';
+            setTimeout(() => playOverlay.remove(), 500); // স্মুথলি ভ্যানিশ হবে
         }
-        // গান চালুর সাথে সাথেই স্লাইড চলা শুরু হবে
-        startAutoSlide();
-        
-        // একবার এক্সপেরিয়েন্স চালু হলে ইভেন্ট রিমুভ করে দেওয়া হবে
-        removeInteractionEvents();
-    }
 
-    const interactionEvents = ['click', 'touchstart', 'pointerdown'];
-    
-    function removeInteractionEvents() {
-        interactionEvents.forEach(event => {
-            document.removeEventListener(event, startExperience);
-        });
+        // প্রথম স্লাইড একটিভ করা (ছবি ও টেক্সট অ্যানিমেশন স্টার্ট)
+        if (slides.length > 0) {
+            slides[0].classList.add('active');
+        }
+
+        // গান প্লে করা
+        if (music) {
+            music.volume = 0.6; // সাউন্ড ৬০%
+            music.play().catch(err => console.log("Audio Play Failed: ", err));
+        }
+
+        // ৪ সেকেন্ড পর পর স্লাইড চেঞ্জ হওয়া শুরু হবে
+        startAutoSlide();
     }
 
     // সব ইনিশিয়াল সেটআপ রান করা হলো
     prepareAnimatedTexts();
 
-    // ইমেজ লোড হওয়ার পর ইউজার অ্যাকশনের জন্য রেডি হবে
+    // ইমেজ লোড হওয়ার পর বাটনটি ক্লিকের জন্য রেডি হবে
     preloadImages().then(() => {
-        console.log("All Images Loaded Perfectly!");
+        console.log("All Images loaded.");
+        startBtn.innerText = "START EXPERIENCE"; // লোড শেষ হলে লেখা দেখাবে
+        startBtn.style.cursor = "pointer";
         
-        // নিজে থেকে ট্রাই করবে (যদি ব্রাউজার আগে থেকে অনুমতি দেয়)
-        startExperience();
-
-        // ব্রাউজার যদি ব্লক করে, তবে প্রথম ক্লিকেই গান আর ছবি একসাথে চালু হবে
-        interactionEvents.forEach(event => {
-            document.addEventListener(event, startExperience, { passive: true });
-        });
+        // বাটনে ক্লিক করলেই ম্যাজিক শুরু
+        startBtn.addEventListener('click', startEverything);
+        startBtn.addEventListener('touchstart', startEverything, { passive: true });
     });
 });
